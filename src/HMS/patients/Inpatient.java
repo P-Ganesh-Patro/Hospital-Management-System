@@ -3,7 +3,6 @@ package HMS.patients;
 import java.util.Date;
 
 public class Inpatient extends Patient {
-
     private int roomNumber;
     private Date admissionDate;
     private Date dischargeDate;
