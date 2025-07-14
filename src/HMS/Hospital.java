@@ -17,52 +17,55 @@ import java.util.Date;
 import java.util.List;
 
 public class Hospital {
-    private List<Doctors> doctors;
-    private List<Nurse> nurses;
-    private List<Technician> technicians;
-    private List<Administrator> administrators;
-    private List<Patient> patients;
-    private List<Room> rooms;
-    private List<Appointment> appointments;
-    private List<Treatment> treatments;
-    private List<Bill> bills;
-
+    private List<Doctors> doctorList;
+    private List<Nurse> nurseList;
+    private List<Technician> technicianList;
+    private List<Administrator> adminList;
+    private List<Patient> patientList;
+    private List<Room> roomList;
+    private List<Appointment> appointmentList;
+    private List<Treatment> treatmentList;
+    private List<Bill> billList;
 
     public Hospital() {
-        doctors = new ArrayList<>();
-        nurses = new ArrayList<>();
-        technicians = new ArrayList<>();
-        administrators = new ArrayList<>();
-        patients = new ArrayList<>();
-        rooms = new ArrayList<>();
-        appointments = new ArrayList<>();
-        treatments = new ArrayList<>();
-        bills = new ArrayList<>();
+        doctorList = new ArrayList<>();
+        nurseList = new ArrayList<>();
+        technicianList = new ArrayList<>();
+        adminList = new ArrayList<>();
+        patientList = new ArrayList<>();
+        roomList = new ArrayList<>();
+        appointmentList = new ArrayList<>();
+        treatmentList = new ArrayList<>();
+        billList = new ArrayList<>();
     }
 
     public void addDoctor(Doctors doctor) {
-        doctors.add(doctor);
+        doctorList.add(doctor);
     }
 
     public void addNurse(Nurse nurse) {
-        nurses.add(nurse);
+        nurseList.add(nurse);
     }
 
     public void addTechnician(Technician tech) {
-        technicians.add(tech);
+        technicianList.add(tech);
+    }
+
+    public void addAdministrator(Administrator admin) {
+        adminList.add(admin);
     }
 
     public void addPatient(Patient patient) {
-        patients.add(patient);
+        patientList.add(patient);
     }
 
     public void addRoom(Room room) {
-        rooms.add(room);
+        roomList.add(room);
     }
 
-    public void showAvailableRooms() {
-//        System.out.println("Available Rooms");
-        for (Room room : rooms) {
+    public void displayAvailableRooms() {
+        System.out.println("----- Available Rooms -----");
+        for (Room room : roomList) {
             if (room.isRoomAvailable()) {
                 room.displayRoom();
             }
@@ -70,49 +73,47 @@ public class Hospital {
     }
 
     public void scheduleAppointment(String appointmentId, Patient patient, String specialization, Date date, String time) {
-        for (Doctors doc : doctors) {
-            System.out.println(doc.getSpecialization() + " heart");
+        boolean isScheduled = false;
+
+        for (Doctors doc : doctorList) {
             if (doc.getSpecialization().equalsIgnoreCase(specialization)) {
-                System.out.println(doc.getName());
-                System.out.println(doc.getSpecialization() + " specl");
                 Appointment appointment = new Appointment(appointmentId, patient, doc, date, time);
-                appointments.add(appointment);
-                System.out.println("Appointment scheduled successfully...");
+                appointmentList.add(appointment);
+                System.out.println("Appointment scheduled successfully.");
                 appointment.displayAppointment();
-                break;
-            } else {
-                System.out.println("No doctor found with specialization: " + specialization);
+                isScheduled = true;
                 break;
             }
         }
 
+        if (!isScheduled) {
+            System.out.println("No doctor found with specialization: " + specialization);
+        }
     }
 
     public void admitPatient(Inpatient inpatient) {
-        for (Room room : rooms) {
+        for (Room room : roomList) {
             if (room.isRoomAvailable()) {
                 room.assignRoom();
                 inpatient.setRoomNumber(room.getRoomNumber());
                 addPatient(inpatient);
-                System.out.println("Inpatient admitted to room: " + room.getRoomNumber());
+                System.out.println("Inpatient admitted to Room No: " + room.getRoomNumber());
+                return;
             }
         }
-//        System.out.println("No rooms available for admission.");
+        System.out.println("No available rooms to admit the patient.");
     }
 
     public void generateBill(String billId, Patient patient, double consultationFee, double testFee, double treatmentFee, double roomCharges, double insuranceCovered) {
         Bill bill = new Bill(billId, patient, consultationFee, testFee, treatmentFee, roomCharges, insuranceCovered);
-        bills.add(bill);
-        System.out.println(" -----------------------Bill:--------------------- ");
+        billList.add(bill);
+        System.out.println("----- Patient Bill -----");
         bill.displayBill();
     }
 
-    public void handleEmergency(EmergencyPatient patient) {
-        System.out.println("Emergency patients...");
-        addPatient(patient);
-
-        patient.displayPatientsInfo();
+    public void handleEmergency(EmergencyPatient emergencyPatient) {
+        System.out.println("Emergency Case Detected:");
+        addPatient(emergencyPatient);
+        emergencyPatient.displayPatientsInfo();
     }
-
-
 }
